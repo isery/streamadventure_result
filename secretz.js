@@ -8,15 +8,12 @@ parser.on('entry', function (entry) {
 	if (entry.type != 'File') {
 		return;
 	}
-	var md5Hash = crypto.createHash('md5', { encoding: 'hex' });
-	var write = function () {
-		this.queue(md5Hash.update(entry));
-	}
+	var hash = crypto.createHash('md5', { encoding: 'hex' });
 	var end = function () {
 		this.queue(' ' + entry.path + '\n')
 	}
-	entry.pipe(through(write,null)).pipe(through(null, end)).pipe(process.stdout);
-})
+	entry.pipe(hash).pipe(through(null, end)).pipe(process.stdout);
+});
 
 var decrypt = crypto.createDecipher(process.argv[2], process.argv[3]);
 
